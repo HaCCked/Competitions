@@ -1,0 +1,44 @@
+train <- read_csv("train.csv")
+test  <- read_csv("test.csv")
+
+train[train==""] <- NA
+train <- na.omit(train)
+
+train[train==""] <- NA
+test <- na.omit(test)
+
+
+names <- names(train)
+
+for (f in names) {
+  if (class(train[[f]])=="character") {
+    levels <- unique(c(train[[f]], test[[f]]))
+    train[[f]] <- as.integer(factor(train[[f]], levels=levels))
+    test[[f]]  <- as.integer(factor(test[[f]],  levels=levels))
+  }
+}
+
+
+train.matrix = as.matrix(train)
+mode(train.matrix) = "numeric"
+test.matrix = as.matrix(test)
+mode(test.matrix) = "numeric"
+
+
+
+param <- list(  objective           = "binary:logistic", 
+                 eta                 = 0.1,
+                max_depth           = 6,  
+                 subsample           = 0.8,
+                 colsample_bytree    = 0.8,
+                 eval_metric         = "auc"
+ )
+
+ bst <- xgboost(param=param, data=train.matrix, label=train$Is_Shortlisted, nrounds=200,missing = NaN, verbose=0)
+
+
+pred <- predict(bst, newdata=test.matrix,missing=NaN)  
+write.csv(pred,"a1.csv")
+
+
+
