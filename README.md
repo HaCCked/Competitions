@@ -1,2 +1,2 @@
-# Machine Learning Codes
+# Competitions
 Participated competitions
