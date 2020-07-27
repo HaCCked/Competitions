@@ -1,0 +1,18 @@
+trainVolCt<-read.csv("CAX_Bidding_TRAIN_Molecule_3_4_5 .csv")
+head(trainVolCt)
+trainVolCt[,c(2,4,12,13)]
+newtrainVolCt<-trainVolCt[,c(2,4,12,13)]
+newtrainVolCt[newtrainVolCt==""] <- NA
+newtrainVolCt <- na.omit(newtrainVolCt)
+m1newtrainVolCt=lm(Winning_price_per_standard_unit~Account+Region+Molecule,data=newtrainVolCt)
+summary(m1newtrainVolCt)
+predict(m1newtrainVolCt,newdata=testset)
+m1newtrainVolCt$xlevels[["Molecule"]] <- union(m1newtrainVolCt$xlevels[["Molecule"]], levels(testset$Molecule))
+predTestm1newtrainVolCt<-predict(m1newtrainVolCt,newdata=testset)
+write.csv(predTestm1newtrainVolCt,"m1newtrainVolCtfile1.csv")
+
+m1newtrainVolCt$xlevels[["Account"]] <- union(m1newtrainVolCt$xlevels[["Account"]], levels(testset2$Account))
+# m1newtrainVolCt$xlevels[["Province"]] <- union(m1newtrainVolCt$xlevels[["Province"]], levels(testset2$Province))
+predict(m1newtrainVolCt,newdata=testset2)
+predtestset2m1newtrainVolCt<-predict(m1newtrainVolCt,newdata=testset2)
+write.csv(predtestset2m1newtrainVolCt,"m1newtrainVolCtfile1file2.csv")
