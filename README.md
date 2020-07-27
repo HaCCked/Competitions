@@ -1,2 +1,4 @@
 # Competitions
-Participated competitions
+Participated competitions on CrowdAnalytix
+Linear Regression for Predicting Generic Drugs 
+
