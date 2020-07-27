@@ -1,0 +1,27 @@
+library(caret)
+library(car)
+library(xgboost)
+
+
+setwd("E:/Kaggle/lastmanstanding")
+train <- read.csv("E:/Kaggle/lastmanstanding/Train.csv")
+train[]<- lapply(train, as.numeric)
+#remove the id column
+train=train[-1]
+train[train==""] <- NA
+#train<- na.omit(train)
+test <- read.csv("E:/Kaggle/lastmanstanding/Test_C1XBIYq.csv")
+test[]<- lapply(test, as.numeric)
+test=test[-1]
+#missing values replace by NA and omit
+test[test==""] <- NA
+#test<- na.omit(test)
+test["Crop_Damage"] <- NA 
+#access the data matrix for train and test labels
+dtest <- xgb.DMatrix(data=data.matrix(test),missing = NA, label=test$Crop_Damage)
+dtrain <- xgb.DMatrix(data=data.matrix(train), label=train$Crop_Damage)
+watchlist1 <- list(train = dtrain,test=dtest)
+#build the linear boostingmodel
+lnr <- xgb.train(data=dtrain, booster = "gblinear", max.depth=2, nthread = 2, nround=2, watchlist=watchlist1, eval.metric = "error", eval.metric = "logloss", objective = "reg:linear")
+pred<-predict(lnr,dtest)
+write.csv(pred,"SampleSubmission.csv")
